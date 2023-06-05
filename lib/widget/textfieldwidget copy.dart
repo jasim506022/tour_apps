@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
-class TextFormFieldWidget extends StatelessWidget {
-  TextFormFieldWidget(
+class TextFormFieldWidgetWithLable extends StatelessWidget {
+  TextFormFieldWidgetWithLable(
       {super.key,
       required this.controller,
       required this.icon,
@@ -12,14 +12,16 @@ class TextFormFieldWidget extends StatelessWidget {
       this.textInputAction = TextInputAction.next,
       this.maxLines = 1,
       this.obscureText = false,
-      required this.validatorText});
+      required this.validatorText,
+      required this.labelttext});
 
   final TextEditingController controller;
   IconData icon;
   bool? obscureText;
   TextInputType? keyboardType;
   TextInputAction? textInputAction;
-  
+  final String labelttext;
+
   final String hintText;
   int? maxLines;
   final String validatorText;
@@ -34,14 +36,14 @@ class TextFormFieldWidget extends StatelessWidget {
               return validatorText;
             }
           },
-          maxLines: maxLines,
           
+          maxLines: maxLines,
           obscureText: obscureText!,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
-          
           decoration: InputDecoration(
-            
+          
+            label: Text(labelttext),
             prefixIcon: maxLines == 5
                 ? Icon(
                     icon,

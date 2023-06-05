@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tour_apps/page/exployerpage.dart';
-import 'package:tour_apps/page/homepage.dart';
-import 'package:tour_apps/page/itemdetailspage.dart';
-import 'package:tour_apps/page/loginpage.dart';
-import 'package:tour_apps/page/registrationpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'const/const.dart';
+import 'page/auth/loginpage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
+ 
   runApp(const MyApp());
 }
 
@@ -16,13 +18,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff008FA0)),
-        primaryColor: const Color(0xff008FA0),
+        appBarTheme: AppBarTheme(
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: backgroundColor,
+          titleTextStyle: appbarTextStyle,
+          centerTitle: true,
+        ),
+        scaffoldBackgroundColor: backgroundColor,
+        primaryColor: blueColor,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: white,
+        ),
         useMaterial3: true,
       ),
-      home: const ItemDetailsPage(),
+      home: const LoginPage(),
     );
   }
 }
