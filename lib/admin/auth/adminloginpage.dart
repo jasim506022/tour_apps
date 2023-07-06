@@ -1,35 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tour_apps/admin/adminmainpage.dart';
 import 'package:tour_apps/page/auth/forgetpasswordpage.dart';
-import 'package:tour_apps/page/auth/registrationpage.dart';
-import 'package:tour_apps/page/mainpage.dart';
+import 'package:tour_apps/page/auth/loginpage.dart';
 import 'package:tour_apps/widget/loadingdialogwidget.dart';
-
 import '../../const/const.dart';
 import '../../widget/textfieldwidget.dart';
-import '../../admin/auth/adminloginpage.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class AdminLoginPage extends StatefulWidget {
+  const AdminLoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<AdminLoginPage> createState() => _AdminLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _AdminLoginPageState extends State<AdminLoginPage> {
   TextEditingController emailEC = TextEditingController();
   TextEditingController passwordEC = TextEditingController();
-
   var key = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    // TODO: implement dispose
     emailEC.dispose();
     passwordEC.dispose();
     super.dispose();
@@ -43,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
+        SystemNavigator.pop();
         return true;
       },
       child: GestureDetector(
@@ -87,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome Back!",
+                            "For Admin",
                             style: GoogleFonts.inter(
                                 fontSize: 25,
                                 fontStyle: FontStyle.normal,
@@ -116,6 +111,14 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 const SizedBox(
                                   height: 20,
+                                ),
+                                Text(
+                                  "User Don't try this",
+                                  style: GoogleFonts.inter(
+                                      fontSize: 18,
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.red),
                                 ),
                                 Form(
                                   key: key,
@@ -218,38 +221,6 @@ class _LoginPageState extends State<LoginPage> {
                                       )),
                                 ),
                                 const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: size.width,
-                                  child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                          side: const BorderSide(
-                                              color: Color(0xff008FA0),
-                                              width: 2),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10)),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RegistrationPage(),
-                                            ));
-                                      },
-                                      child: Text(
-                                        "Create Account".toUpperCase(),
-                                        style: GoogleFonts.inter(
-                                            fontSize: 15,
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 1,
-                                            color: const Color(0xff008FA0)
-                                            //textStyle: TextStyle()
-                                            ),
-                                      )),
-                                ),
-                                const SizedBox(
                                   height: 15,
                                 ),
                                 const SizedBox(
@@ -261,73 +232,31 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "asset/image/facebook.png",
-                                  height: 30,
-                                  width: 30,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "asset/image/google.png",
-                                  height: 30,
-                                  width: 30,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "asset/image/apple.png",
-                                  height: 30,
-                                  width: 30,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
                           Center(
                             child: RichText(
                                 text: TextSpan(children: [
                               TextSpan(
-                                text: 'Already have an Account? ',
+                                text: 'If you are user.  ',
                                 style: GoogleFonts.inter(
                                     fontSize: 14,
                                     fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     letterSpacing: 1,
                                     color: Colors.white
                                     //textStyle: TextStyle()
                                     ),
                               ),
                               TextSpan(
-                                text: 'for Admin',
-                                recognizer:TapGestureRecognizer()..onTap=(){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLoginPage(),));
-                                },
+                                text: 'User Login',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage(),
+                                        ));
+                                  },
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontStyle: FontStyle.normal,
@@ -373,40 +302,12 @@ class _LoginPageState extends State<LoginPage> {
         showToast(context: context, text: 'Error occured: \n $error');
       });
 
-      if (currentUser != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(currentUser!.uid)
-            .get()
-            .then((value) async {
-          if (value.exists) {
-            //status is approved
-            if (value.data()!["status"] == "approved") {
-              await prefs!.setString('name', value.data()!["name"]);
-              await prefs!.setString('email', value.data()!["email"]);
-              await prefs!.setString('image', value.data()!["image"]);
-              await prefs!.setString('uid', value.data()!["uid"]);
-
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainPage(),
-                  ));
-            } else {
-              FirebaseAuth.instance.signOut();
-              Navigator.pop(context);
-              showToast(
-                  context: context,
-                  text:
-                      "you have BLOCKED by admin.\ncontact Admin: admin@ishop.com");
-            }
-          } else {
-            FirebaseAuth.instance.signOut();
-            Navigator.pop(context);
-            Fluttertoast.showToast(msg: "This User's record do not exists.");
-          }
-        });
-      }
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdminMainPage(),
+          ));
     }
   }
 }

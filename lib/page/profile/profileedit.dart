@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tour_apps/page/auth/loginpage.dart';
 import 'package:tour_apps/page/profile/profilepage.dart';
@@ -25,6 +27,25 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   // }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    updatedata();
+    super.initState();
+  }
+
+  DocumentSnapshot<Map<String, dynamic>>? user;
+
+  updatedata() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(prefs!.getString('uid')!)
+        .get()
+        .then((value) {
+      user = value;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,16 +67,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   },
                   icon: const Icon(Icons.edit)),
               Center(
-                child: image == null
-                    ? const CircleAvatar(
-                        radius: 72,
-                        backgroundImage:
-                            AssetImage("asset/image/ion_earth400.png"))
-                    : CircleAvatar(
-                        radius: 72,
-                        backgroundImage: FileImage(File(image!.path)),
-                      ),
-              ),
+                  child: CircleAvatar(
+                      radius: 72,
+                      backgroundImage:
+                          NetworkImage(prefs!.getString('image')!))),
               const SizedBox(
                 height: 15,
               ),
@@ -67,7 +82,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               const SizedBox(
                 height: 10,
               ),
-              Text(prefs!.getString('profession')!,
+              Text("Hello",
                   style: textStyle.copyWith(
                       color: unselectedColor,
                       fontWeight: FontWeight.w600,
@@ -143,7 +158,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       color: unselectedColor,
                       fontWeight: FontWeight.w600,
                       fontSize: 15)),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Divider(
@@ -155,6 +170,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               ),
               ListTile(
                 onTap: () {
+                  FirebaseAuth.instance.signOut();
                   Navigator.push(
                       context,
                       MaterialPageRoute(

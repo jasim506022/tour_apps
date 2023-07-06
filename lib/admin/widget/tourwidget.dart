@@ -2,19 +2,28 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
+
 import 'package:tour_apps/const/const.dart';
+import 'package:tour_apps/model/tripsmodel.dart';
 
-import '../model/placemodel.dart';
-import '../model/tripsmodel.dart';
-import '../page/home/itemdetailspage.dart';
+import '../home/tourdetailsadmin.dart';
 
-class AllTripsWidget extends StatelessWidget {
-  const AllTripsWidget({
-    super.key,
-    required this.tourPlaceDetailsModel,
-  });
+enum SampleItem { itemOne, itemTwo, itemThree }
 
-  final TourPlaceDetailsModel tourPlaceDetailsModel;
+class TourWidget extends StatefulWidget {
+  const TourWidget({
+    Key? key,
+    required this.tripsModel,
+  }) : super(key: key);
+
+  final TripsModels tripsModel;
+
+  @override
+  State<TourWidget> createState() => _TourWidgetState();
+}
+
+class _TourWidgetState extends State<TourWidget> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +32,13 @@ class AllTripsWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ItemDetailsPage(model: tourPlaceDetailsModel),
+              builder: (context) => TourDetailsAdmin(model: widget.tripsModel),
             ));
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 15),
         child: Container(
-          height: 120,
+          height: 110,
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
@@ -42,8 +50,8 @@ class AllTripsWidget extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: FancyShimmerImage(
-                  imageUrl: tourPlaceDetailsModel.image[0],
-                  height: 105,
+                  imageUrl: widget.tripsModel.image![0],
+                  height: 95,
                   boxFit: BoxFit.fill,
                   width: 140,
                 ),
@@ -61,7 +69,7 @@ class AllTripsWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            tourPlaceDetailsModel.tourplace,
+                            widget.tripsModel.tourname!,
                             style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontStyle: FontStyle.normal,
@@ -80,7 +88,7 @@ class AllTripsWidget extends StatelessWidget {
                                 width: 10,
                               ),
                               Text(
-                                tourPlaceDetailsModel.rate.toString(),
+                                widget.tripsModel.rate.toString(),
                                 style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontStyle: FontStyle.normal,
@@ -105,36 +113,55 @@ class AllTripsWidget extends StatelessWidget {
                                 color: blueColor,
                               ),
                               Text(
-                                tourPlaceDetailsModel.location,
+                                widget.tripsModel.location!,
                                 style: textStyle.copyWith(
                                     fontSize: 11, color: blueColor),
                               ),
                             ],
                           ),
                           const Spacer(),
-                          Icon(
-                            Ionicons.heart,
-                            color: Theme.of(context).primaryColor,
-                            size: 30,
-                          )
+                          RichText(
+                            text: TextSpan(children: [
+                              const TextSpan(
+                                text: "Cateogry :",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
+                              ),
+                              TextSpan(
+                                  text: "  ${widget.tripsModel.categoris}",
+                                  style: textStyle.copyWith(
+                                      fontSize: 12,
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.bold))
+                            ]),
+                          ),
+
+                          // Icon(
+                          //   Ionicons.heart,
+                          //   color: Theme.of(context).primaryColor,
+                          //   size: 30,
+                          // )
                         ],
                       ),
                       const SizedBox(
-                        width: 15,
+                        height: 3,
                       ),
-                      Text(
-                        "Cateogry: ${tourPlaceDetailsModel.location}",
-                        style: textStyle.copyWith(fontSize: 12),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "${tourPlaceDetailsModel.cost} Tk",
-                        style: textStyle.copyWith(
-                            fontSize: 18,
-                            color: blueColor,
-                            fontWeight: FontWeight.w900),
+                      RichText(
+                        text: TextSpan(children: [
+                          TextSpan(
+                            text: "Tk ${widget.tripsModel.cost} /",
+                            style: textStyle.copyWith(
+                                fontSize: 13,
+                                color: black,
+                                fontWeight: FontWeight.w900),
+                          ),
+                          const TextSpan(
+                              text: "per person",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 11,
+                              ))
+                        ]),
                       ),
                     ],
                   ),
@@ -147,4 +174,3 @@ class AllTripsWidget extends StatelessWidget {
     );
   }
 }
-

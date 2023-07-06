@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:tour_apps/page/home/alltripspage.dart';
 import '../../const/const.dart';
@@ -10,6 +12,7 @@ import '../../model/placemodel.dart';
 import '../../widget/grouptips.dart';
 import '../../widget/rowwidget.dart';
 import '../../widget/toptripswidget.dart';
+import 'fortext.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,8 +22,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  double latitude = 0.0;
+  double longitude = 0.0;
+
   int selectCategoris = 0;
   String categoryString = "Sea";
+
+  String address = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    getLocation();
+    getAddres();
+    super.initState();
+  }
+
+  void getLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      showToast(context: context, text: "Location permissions are denied");
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      latitude = position.latitude;
+      longitude = position.longitude;
+    });
+  }
+
+  getAddres() async {
+    List<Placemark>? placemarks =
+        await placemarkFromCoordinates(52.2165157, 6.9437819);
+    Placemark placemark = placemarks[0];
+    address = placemark.country!;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -37,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Location", style: textStyle),
+              const Text("location"),
               const SizedBox(
                 height: 8,
               ),
@@ -49,8 +86,7 @@ class _HomePageState extends State<HomePage> {
                     size: 25,
                     color: iconColor,
                   ),
-                  Text("Dhaka, Bangladesh",
-                      style: textStyle.copyWith(color: locationTextColor)),
+                  const LocationPage(),
                   Icon(
                     IconlyLight.arrowDown2,
                     size: 25,
@@ -108,8 +144,9 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-               RowWidget(
-                text: 'Category', funtion: () {  },
+              RowWidget(
+                text: 'Category',
+                funtion: () {},
               ),
               const SizedBox(
                 height: 15,
@@ -176,10 +213,15 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 15,
               ),
-               RowWidget(
-                text: 'Top Trips', funtion: () { 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  AllTripsPage(),));
-                 },
+              RowWidget(
+                text: 'Top Trips',
+                funtion: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllTripsPage(),
+                      ));
+                },
               ),
               const SizedBox(
                 height: 10,
@@ -200,10 +242,17 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 5,
               ),
-               RowWidget(
-                text: 'Group Trips', funtion: () { 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  AllTripsPage(isGroup: true,),));
-                 },
+              RowWidget(
+                text: 'Group Trips',
+                funtion: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllTripsPage(
+                          isGroup: true,
+                        ),
+                      ));
+                },
               ),
               SizedBox(
                   height: MediaQuery.of(context).size.height,
@@ -224,4 +273,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

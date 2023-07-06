@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class GroupTipsModel {
   final String tourplace;
   final String location;
@@ -11,6 +13,40 @@ class GroupTipsModel {
       required this.cost,
       required this.image,
       required this.progressNumber});
+}
+
+class GroupTipsModelFirebase {
+  String? grouptrip;
+  Timestamp? publishdate;
+  String? tripcost;
+  String? tripdescript;
+  List<dynamic>? tripimage;
+  String? triplocation;
+  String? tripsname;
+  String? tripsrate;
+
+  GroupTipsModelFirebase(
+      {this.grouptrip,
+      this.publishdate,
+      this.tripcost,
+      this.tripdescript,
+      this.tripimage,
+      this.triplocation,
+      this.tripsname,
+      this.tripsrate});
+
+  factory GroupTipsModelFirebase.fromMap(Map<String, dynamic> map) {
+    return GroupTipsModelFirebase(
+      grouptrip: map["grouptrip"],
+      publishdate: map["publishdate"],
+      tripcost: map["tripcost"],
+      tripdescript: map["tripdescript"],
+      tripimage: map["tripimage"],
+      triplocation: map["triplocation"],
+      tripsname: map["tripsname"],
+      tripsrate: map["tripsrate"],
+    );
+  }
 }
 
 List<GroupTipsModel> grouptipsdetaillist = [

@@ -1,32 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:tour_apps/admin/adminmainpage.dart';
+import 'package:tour_apps/admin/home/uploadscreen.dart';
 import 'package:tour_apps/const/const.dart';
+import '../../model/tripsmodel.dart';
+import 'package:intl/intl.dart';
 
-import '../../admin/widget/tourwidget.dart';
-import '../../model/placemodel.dart';
+enum DeleteUpdate { delete, update }
 
-class ItemDetailsPage extends StatefulWidget {
-  const ItemDetailsPage({super.key, required this.model});
+class TourDetailsAdmin extends StatefulWidget {
+  const TourDetailsAdmin({
+    super.key,
+    required this.model,
+  });
 
-  final TourPlaceDetailsModel model;
+  final TripsModels model;
 
   @override
-  State<ItemDetailsPage> createState() => _ItemDetailsPageState();
+  State<TourDetailsAdmin> createState() => _TourDetailsAdminState();
 }
 
-class _ItemDetailsPageState extends State<ItemDetailsPage> {
+class _TourDetailsAdminState extends State<TourDetailsAdmin> {
   @override
   void initState() {
-    image = widget.model.image[0];
+    image = widget.model.image![0];
     super.initState();
   }
 
   String? image;
-  SampleItem? selectedMenu;
-  var selectedItem = '';
-
+  DeleteUpdate? selectMenu;
+  int selectBdColor = 0;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -35,41 +42,77 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
-        iconTheme: IconThemeData(color: Colors.black),
         title: Text(
-          "${widget.model.categories} View",
+          "${widget.model.tourname} View",
         ),
+        centerTitle: true,
         actions: [
           PopupMenuButton(onSelected: (value) {
-            // your logic
             setState(() {
-              selectedItem = value.toString();
+              selectMenu = value;
+              if (selectMenu == DeleteUpdate.delete) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Are you want to Delete!"),
+                      content: const Text(
+                          "Do you want delete this tour Permanently"),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Cencel")),
+                        TextButton(
+                            onPressed: () {
+                              FirebaseFirestore.instance
+                                  .collection("trip")
+                                  .doc(widget.model.id)
+                                  .delete();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (c) => AdminMainPage()));
+                            },
+                            child: Text(
+                              "Yes",
+                              style: TextStyle(color: Colors.red),
+                            )),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UploadScreen(
+                        isUPdate: true,
+                        tripsModels: widget.model,
+                      ),
+                    ));
+              }
             });
-            print(value);
-            Navigator.pushNamed(context, value.toString());
           }, itemBuilder: (BuildContext bc) {
-            return const [
-              PopupMenuItem(
-                child: Text("Hello"),
-                value: '/hello',
+            return [
+              const PopupMenuItem(
+                value: DeleteUpdate.delete,
+                child: Text("Delete"),
               ),
-              PopupMenuItem(
-                child: Text("About"),
-                value: '/about',
+              const PopupMenuItem(
+                value: DeleteUpdate.update,
+                child: Text("Update"),
               ),
-              PopupMenuItem(
-                child: Text("Contact"),
-                value: '/contact',
-              )
             ];
           })
         ],
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: MediaQuery.of(context).size.height * .5,
@@ -91,7 +134,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                         height: 80,
                         width: 250,
                         child: ListView.builder(
-                          itemCount: widget.model.image.length,
+                          itemCount: widget.model.image!.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Padding(
@@ -99,7 +142,8 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                               child: InkWell(
                                 onTap: () {
                                   setState(() {
-                                    image = widget.model.image[index];
+                                    image = widget.model.image![index];
+                                    selectBdColor = index;
                                   });
                                 },
                                 child: Container(
@@ -109,11 +153,14 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                                       borderRadius: BorderRadius.circular(25),
                                       image: DecorationImage(
                                         image: NetworkImage(
-                                            widget.model.image[index]),
+                                            widget.model.image![index]),
                                         fit: BoxFit.fill,
                                       ),
                                       border: Border.all(
-                                          color: Colors.white, width: 5)),
+                                          color: selectBdColor == index
+                                              ? Colors.red
+                                              : Colors.white,
+                                          width: 5)),
                                 ),
                               ),
                             );
@@ -129,7 +176,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
               ),
               Row(
                 children: [
-                  Text(widget.model.tourplace,
+                  Text(widget.model.tourname!,
                       overflow: TextOverflow.ellipsis,
                       style: appbarTextStyle.copyWith(fontSize: 22)),
                   const Spacer(),
@@ -161,7 +208,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                     color: unselectedColor,
                   ),
                   Text(
-                    widget.model.location,
+                    widget.model.location!,
                     style: textStyle.copyWith(fontSize: 14),
                   ),
                 ],
@@ -169,8 +216,22 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
               const SizedBox(
                 height: 15,
               ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  DateFormat('yyyy-MM-dd HH:mm:ss')
+                      .format(widget.model.tourdate!.toDate()),
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               Text(
-                widget.model.description,
+                widget.model.description!,
                 textAlign: TextAlign.justify,
                 style: textStyle.copyWith(fontSize: 15),
               ),
@@ -189,23 +250,15 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                           border: Border.all(
                               color: const Color.fromRGBO(233, 233, 233, 1),
                               width: 1)),
-                      child: Text("Booking Now | \$ ${widget.model.cost}",
+                      child: Text("Per Person | \$ ${widget.model.cost}",
                           textAlign: TextAlign.justify,
                           style: appbarTextStyle.copyWith(color: white)),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Icon(
-                    Ionicons.heart,
-                    color: Color.fromRGBO(175, 175, 175, 1),
-                    size: 40,
-                  ),
                 ],
               ),
               const SizedBox(
-                height: 20,
+                height: 50,
               ),
             ],
           ),

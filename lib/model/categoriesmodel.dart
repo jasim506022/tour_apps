@@ -16,3 +16,22 @@ List<CategoryModel> categories = [
   CategoryModel(name: "Lake", imagename: "asset/categories/pond.png"),
   CategoryModel(name: "River", imagename: "asset/categories/river.png"),
 ];
+
+List<String> categoryString = [
+  "Sea",
+  "Forest",
+  "Island",
+  "Mountain",
+  "Lake",
+  "River"
+];
+
+List<String> categoryAllString = [
+  "All",
+  "Sea",
+  "Forest",
+  "Island",
+  "Mountain",
+  "Lake",
+  "River"
+];

@@ -17,7 +17,6 @@ class AllTripsPage extends StatefulWidget {
 }
 
 class _AllTripsPageState extends State<AllTripsPage> {
-  
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(

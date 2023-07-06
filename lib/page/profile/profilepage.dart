@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   takePhoto(ImageSource source) async {
     final pickIfile = await picker.pickImage(source: source);
+    
     setState(() {
       image = pickIfile;
       Navigator.pop(context);
@@ -96,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               builder: (context) => bottomSheet(),
                             );
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                             size: 30,
@@ -129,11 +131,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icons.person,
                 validatorText: '',
               ),
-              // TextFormFieldWidgetWithLable(
-              //   controller: nameEC,
-              //   hintText: 'title',
-              //   icon: Icons.person, validatorText: '', labelttext: '',
-              // ),
               TextFormFieldWidgetWithLable(
                 controller: descriptionEC,
                 maxLines: 5,
@@ -152,6 +149,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundColor: const Color(0xff008FA0),
                         padding: const EdgeInsets.symmetric(vertical: 10)),
                     onPressed: () async {
+                      await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(prefs!.getString('uid')!)
+                          .update({
+                        "name": nameEC.text.trim(),
+                        "about": descriptionEC.text.trim(),
+                        "profession": prefessionalEC.text.trim(),
+                        "birth": dateofbirthEC.text.trim()
+                      });
+
                       await prefs!.setString('name', nameEC.text.trim());
                       await prefs!
                           .setString('profession', prefessionalEC.text.trim());
@@ -159,6 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           .setString('birth', dateofbirthEC.text.trim());
                       await prefs!
                           .setString('about', descriptionEC.text.trim());
+
+                      showToast(context: context, text: "Update Profile");
 
                       // ignore: use_build_context_synchronously
                       Navigator.push(

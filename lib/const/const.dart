@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,18 @@ Color black = const Color.fromRGBO(30, 30, 30, 1);
 
 XFile? image;
 SharedPreferences? prefs;
+
+
+showToast({required BuildContext context, required String text}) {
+  Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Theme.of(context).primaryColor,
+      textColor: Colors.white,
+      fontSize: 16.0);
+}
 
 // TextStyle
 TextStyle textStyle = GoogleFonts.inter(
@@ -46,9 +59,3 @@ TextStyle appbarTextStyle = GoogleFonts.inter(
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.w600,
     color: black);
-
-
-
-
-
-  

@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tour_apps/const/const.dart';
+import 'package:tour_apps/page/auth/loginpage.dart';
 import '../../model/personmodel.dart';
 import '../../widget/singlechatwidget.dart';
 
@@ -25,11 +29,22 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           "Chat Room",
         ),
         centerTitle: true,
-        actions: const [
-          Padding(
+        actions: [
+          const Padding(
             padding: EdgeInsets.only(right: 15),
             child: Icon(Icons.edit_calendar),
-          )
+          ),
+          IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ));
+                Fluttertoast.showToast(msg: "Sig nout");
+              },
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: Padding(

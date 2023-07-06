@@ -1,29 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tour_apps/page/auth/forgetpasswordpage.dart';
 import 'package:tour_apps/page/auth/registrationpage.dart';
-import 'package:tour_apps/page/mainpage.dart';
-import 'package:tour_apps/widget/loadingdialogwidget.dart';
+
 
 import '../../const/const.dart';
 import '../../widget/textfieldwidget.dart';
-import '../../admin/auth/adminloginpage.dart';
+import 'loginpage.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class ForgetPasswwordPage extends StatefulWidget {
+  const ForgetPasswwordPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ForgetPasswwordPage> createState() => _ForgetPasswwordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgetPasswwordPageState extends State<ForgetPasswwordPage> {
   TextEditingController emailEC = TextEditingController();
-  TextEditingController passwordEC = TextEditingController();
 
   var key = GlobalKey<FormState>();
 
@@ -31,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     // TODO: implement dispose
     emailEC.dispose();
-    passwordEC.dispose();
+
     super.dispose();
   }
 
@@ -87,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome Back!",
+                            "Forget Password",
                             style: GoogleFonts.inter(
                                 fontSize: 25,
                                 fontStyle: FontStyle.normal,
@@ -129,67 +124,8 @@ class _LoginPageState extends State<LoginPage> {
                                         icon: Icons.email,
                                         validatorText: 'Email address Empty',
                                       ),
-                                      TextFormFieldWidget(
-                                        controller: passwordEC,
-                                        hintText: 'Enter Your Password',
-                                        obscureText: true,
-                                        icon: Icons.lock,
-                                        validatorText: 'Pasword is Empty',
-                                      ),
                                     ],
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Icon(Icons.square_outlined,
-                                            size: 20, color: Color(0xff008FA0)),
-                                        Text(
-                                          "Remember me",
-                                          style: GoogleFonts.inter(
-                                              fontSize: 12,
-                                              fontStyle: FontStyle.normal,
-                                              fontWeight: FontWeight.w700,
-                                              color: const Color.fromRGBO(
-                                                  99, 99, 99, 1)
-                                              //textStyle: TextStyle()
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ForgetPasswwordPage(),
-                                            ));
-                                      },
-                                      child: Text(
-                                        "Forget Password",
-                                        style: GoogleFonts.inter(
-                                            fontSize: 12,
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w700,
-                                            color: const Color.fromRGBO(
-                                                99, 99, 99, 1)
-                                            //textStyle: TextStyle()
-                                            ),
-                                      ),
-                                    )
-                                  ],
                                 ),
                                 const SizedBox(
                                   height: 15,
@@ -203,10 +139,10 @@ class _LoginPageState extends State<LoginPage> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 10)),
                                       onPressed: () async {
-                                        loginForm();
+                                        passwordForm();
                                       },
                                       child: Text(
-                                        "Sign in",
+                                        "Send",
                                         style: GoogleFonts.inter(
                                             fontSize: 15,
                                             fontStyle: FontStyle.normal,
@@ -324,10 +260,16 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                               ),
                               TextSpan(
-                                text: 'for Admin',
-                                recognizer:TapGestureRecognizer()..onTap=(){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLoginPage(),));
-                                },
+                                text: 'Sign in',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage(),
+                                        ));
+                                  },
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontStyle: FontStyle.normal,
@@ -352,61 +294,16 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void loginForm() async {
+  void passwordForm() async {
     if (key.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const LoadingDialogWidget(
-            message: 'Checking credential',
-          );
-        },
-      );
-      User? currentUser;
       await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: emailEC.text.trim(), password: passwordEC.text.trim())
-          .then((value) {
-        currentUser = value.user;
-      }).catchError((error) {
-        Navigator.pop(context);
+          .sendPasswordResetEmail(
+            email: emailEC.text.trim(),
+          )
+          .then((value) {})
+          .catchError((error) {
         showToast(context: context, text: 'Error occured: \n $error');
       });
-
-      if (currentUser != null) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(currentUser!.uid)
-            .get()
-            .then((value) async {
-          if (value.exists) {
-            //status is approved
-            if (value.data()!["status"] == "approved") {
-              await prefs!.setString('name', value.data()!["name"]);
-              await prefs!.setString('email', value.data()!["email"]);
-              await prefs!.setString('image', value.data()!["image"]);
-              await prefs!.setString('uid', value.data()!["uid"]);
-
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MainPage(),
-                  ));
-            } else {
-              FirebaseAuth.instance.signOut();
-              Navigator.pop(context);
-              showToast(
-                  context: context,
-                  text:
-                      "you have BLOCKED by admin.\ncontact Admin: admin@ishop.com");
-            }
-          } else {
-            FirebaseAuth.instance.signOut();
-            Navigator.pop(context);
-            Fluttertoast.showToast(msg: "This User's record do not exists.");
-          }
-        });
-      }
     }
   }
 }
