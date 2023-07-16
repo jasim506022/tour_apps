@@ -1,10 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tour_apps/admin/home/searchpage.dart';
 import 'package:tour_apps/admin/home/uploadscreen.dart';
 import 'package:tour_apps/const/const.dart';
-import 'package:tour_apps/model/tripsmodel.dart';
-import 'package:tour_apps/splashscreen/services/apisservice.dart';
+import 'package:tour_apps/model/tourmodel.dart';
 import '../../model/categoriesmodel.dart';
-import '../widget/tourwidget.dart';
+import '../services/provider/dropcategoryall.dart';
+import '../widget/loadingtourwidget.dart';
+import '../widget/singletourwidget.dart';
 
 class HomePageAdmin extends StatefulWidget {
   const HomePageAdmin({super.key});
@@ -13,13 +18,12 @@ class HomePageAdmin extends StatefulWidget {
 }
 
 class _HomePageAdminState extends State<HomePageAdmin> {
-  String dropdownValue = categoryAllString.first;
   TextEditingController searchFilter = TextEditingController();
-  String searchText = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         automaticallyImplyLeading: false,
         title: Text(
           "All Trips",
@@ -27,6 +31,7 @@ class _HomePageAdminState extends State<HomePageAdmin> {
         ),
         actions: [
           IconButton(
+              tooltip: "Add Tour",
               onPressed: () {
                 Navigator.push(
                     context,
@@ -41,52 +46,93 @@ class _HomePageAdminState extends State<HomePageAdmin> {
       ),
       body: Column(
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.black, width: 1)),
-            child: const Text("Search Here"),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchPage(),
+                  ));
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey, width: 1)),
+              child: Text("Search Here",
+                  style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w600,
+                      color: black)),
+            ),
           ),
-          DropdownButton<String>(
-            value: dropdownValue,
-            isExpanded: true,
-            items: categoryAllString.map<DropdownMenuItem<String>>((e) {
-              return DropdownMenuItem(value: e, child: Text(e));
-            }).toList(),
-            onChanged: (value) {
-              dropdownValue = value!;
-              setState(() {});
+          Consumer<DropCategoyAll>(
+            builder: (context, values, child) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: DropdownButton<String>(
+                  style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: blueColor),
+                  value: values.categoryName,
+                  isExpanded: true,
+                  items: categoryAllString.map<DropdownMenuItem<String>>((e) {
+                    return DropdownMenuItem(value: e, child: Text(e));
+                  }).toList(),
+                  onChanged: (value) {
+                    Provider.of<DropCategoyAll>(context, listen: false)
+                        .categorySet(cateory: value!);
+                  },
+                ),
+              );
             },
           ),
-          //Kuakata Beach
           Expanded(
-            child: StreamBuilder(
-              stream: dropdownValue != null
-                  ? ApiService()
-                      .categoriesfirebaseSnapsh(categories: dropdownValue)
-                  : ApiService().firebaseSnapsh(
-                      collectionName: "trip",
-                      searchItem: searchText,
-                      categories: dropdownValue),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      TripsModels tripsModel = TripsModels.fromMap(snapshot
-                          .data!.docs[index]
-                          .data()); //Map<String, dynamic>
-                      return TourWidget(
-                        tripsModel: tripsModel,
+            child: Consumer<DropCategoyAll>(
+              builder: (context, value, child) {
+                return StreamBuilder(
+                  stream: value.categoryName == "All"
+                      ? FirebaseFirestore.instance
+                          .collection("trip")
+                          .orderBy("publishdate", descending: true)
+                          .snapshots()
+                      : FirebaseFirestore.instance
+                          .collection("trip")
+                          .where("categoris", isEqualTo: value.categoryName)
+                          .orderBy("publishdate", descending: true)
+                          .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const LoadingTourWidget();
+                    }
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          TourModel tourModel = TourModel.fromMap(snapshot
+                              .data!.docs[index]
+                              .data()); //Map<String, dynamic>
+                          return ChangeNotifierProvider.value(
+                            value: tourModel,
+                            child: const SingleTourWidget(),
+                          );
+                        },
                       );
-                    },
-                  );
-                }
-
-                return const Text("Something is worng");
+                    }
+                    return const LoadingTourWidget();
+                  },
+                );
               },
             ),
           ),

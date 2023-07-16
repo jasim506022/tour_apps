@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   var _currentIndex = 0;
 
   var list = [
-    const HomePage(),
+    const ExployeerPage(),
     const ExployeerPage(),
     const ChatRoomPage(),
     const SaveTipsPage(),

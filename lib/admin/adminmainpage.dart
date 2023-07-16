@@ -5,7 +5,7 @@ import 'package:tour_apps/const/const.dart';
 import 'package:tour_apps/page/chatroom/chatroompage.dart';
 import 'package:tour_apps/page/profile/profileedit.dart';
 import 'package:tour_apps/page/save/savetipspage.dart';
-import '../page/exployeer/group/grouptripspage.dart';
+import 'group/grouptripsadminpage.dart';
 import 'home/homepageadmin.dart';
 
 // ignore: must_be_immutable
@@ -27,7 +27,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
   var _selectedIndex = 0;
   final _widgetOptions = [
     const HomePageAdmin(),
-    const GroupTripsPage(),
+    const GroupTripsAdminPage(),
     const ChatRoomPage(),
     const SaveTipsPage(),
     const ProfileEditPage()

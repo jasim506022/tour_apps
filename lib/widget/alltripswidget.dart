@@ -5,7 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:tour_apps/const/const.dart';
 
 import '../model/placemodel.dart';
-import '../model/tripsmodel.dart';
+import '../model/tourmodel.dart';
 import '../page/home/itemdetailspage.dart';
 
 class AllTripsWidget extends StatelessWidget {

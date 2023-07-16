@@ -2,37 +2,25 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ionicons/ionicons.dart';
-
+import 'package:provider/provider.dart';
 import 'package:tour_apps/const/const.dart';
-import 'package:tour_apps/model/tripsmodel.dart';
-
+import 'package:tour_apps/model/tourmodel.dart';
 import '../home/tourdetailsadmin.dart';
 
-enum SampleItem { itemOne, itemTwo, itemThree }
-
-class TourWidget extends StatefulWidget {
-  const TourWidget({
+class SingleTourWidget extends StatelessWidget {
+  const SingleTourWidget({
     Key? key,
-    required this.tripsModel,
   }) : super(key: key);
-
-  final TripsModels tripsModel;
-
-  @override
-  State<TourWidget> createState() => _TourWidgetState();
-}
-
-class _TourWidgetState extends State<TourWidget> {
-
 
   @override
   Widget build(BuildContext context) {
+    final tourmodel = Provider.of<TourModel>(context);
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TourDetailsAdmin(model: widget.tripsModel),
+              builder: (context) => TourDetailsAdmin(model: tourmodel),
             ));
       },
       child: Padding(
@@ -50,7 +38,7 @@ class _TourWidgetState extends State<TourWidget> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: FancyShimmerImage(
-                  imageUrl: widget.tripsModel.image![0],
+                  imageUrl: tourmodel.image![0],
                   height: 95,
                   boxFit: BoxFit.fill,
                   width: 140,
@@ -69,7 +57,7 @@ class _TourWidgetState extends State<TourWidget> {
                       Row(
                         children: [
                           Text(
-                            widget.tripsModel.tourname!,
+                            tourmodel.tourname!,
                             style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontStyle: FontStyle.normal,
@@ -88,7 +76,7 @@ class _TourWidgetState extends State<TourWidget> {
                                 width: 10,
                               ),
                               Text(
-                                widget.tripsModel.rate.toString(),
+                                tourmodel.rate.toString(),
                                 style: GoogleFonts.inter(
                                     fontSize: 12,
                                     fontStyle: FontStyle.normal,
@@ -113,7 +101,7 @@ class _TourWidgetState extends State<TourWidget> {
                                 color: blueColor,
                               ),
                               Text(
-                                widget.tripsModel.location!,
+                                tourmodel.location!,
                                 style: textStyle.copyWith(
                                     fontSize: 11, color: blueColor),
                               ),
@@ -128,19 +116,13 @@ class _TourWidgetState extends State<TourWidget> {
                                     fontSize: 12, color: Colors.black),
                               ),
                               TextSpan(
-                                  text: "  ${widget.tripsModel.categoris}",
+                                  text: "  ${tourmodel.categoris}",
                                   style: textStyle.copyWith(
                                       fontSize: 12,
                                       color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.bold))
                             ]),
                           ),
-
-                          // Icon(
-                          //   Ionicons.heart,
-                          //   color: Theme.of(context).primaryColor,
-                          //   size: 30,
-                          // )
                         ],
                       ),
                       const SizedBox(
@@ -149,7 +131,7 @@ class _TourWidgetState extends State<TourWidget> {
                       RichText(
                         text: TextSpan(children: [
                           TextSpan(
-                            text: "Tk ${widget.tripsModel.cost} /",
+                            text: "Tk ${tourmodel.cost} /",
                             style: textStyle.copyWith(
                                 fontSize: 13,
                                 color: black,

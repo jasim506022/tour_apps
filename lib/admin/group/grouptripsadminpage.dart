@@ -4,16 +4,16 @@ import 'package:tour_apps/model/grouptipmodel.dart';
 
 import '../../../const/const.dart';
 import '../../../widget/grouptips.dart';
-import 'uploadgroupstrisp.dart';
+import 'uploadgroupstrispadmin.dart';
 
-class GroupTripsPage extends StatefulWidget {
-  const GroupTripsPage({super.key});
+class GroupTripsAdminPage extends StatefulWidget {
+  const GroupTripsAdminPage({super.key});
 
   @override
-  State<GroupTripsPage> createState() => _GroupTripsPageState();
+  State<GroupTripsAdminPage> createState() => _GroupTripsAdminPageState();
 }
 
-class _GroupTripsPageState extends State<GroupTripsPage> {
+class _GroupTripsAdminPageState extends State<GroupTripsAdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +29,7 @@ class _GroupTripsPageState extends State<GroupTripsPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UploadGroupTripsPage(),
+                      builder: (context) => const UploadGroupTripsPageAdmin(),
                     ));
               },
               icon: const Icon(Icons.add))

@@ -291,6 +291,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
           );
         },
       );
+      // ignore: unused_local_variable
       User? currentUser;
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(

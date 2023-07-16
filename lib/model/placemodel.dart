@@ -20,7 +20,6 @@ class TourPlaceDetailsModel {
 
 //sea
 List<TourPlaceDetailsModel> tourplacedetaillist = [
-
   //okay
   TourPlaceDetailsModel(
       tourplace: "Cox's Bazar Beach",
@@ -51,7 +50,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2022/07/31/19/41/kuakata-7356673_640.jpg",
         "https://cdn.pixabay.com/photo/2015/03/11/05/03/sunset-668196_640.jpg"
       ]),
-  
+
   //okay
   TourPlaceDetailsModel(
       tourplace: "Patenga sea beach",
@@ -93,8 +92,8 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2016/11/18/18/39/beach-1836335_640.jpg"
       ]),
 
-      //Forest
-      //okay
+  //Forest
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Ratargul Swamp",
       rate: 4.8,
@@ -150,7 +149,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2018/01/12/14/24/night-3078326_640.jpg"
       ]),
 
-      //okay 
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Tilagor Eco Park",
       rate: 4.0,
@@ -165,8 +164,8 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2016/11/08/04/49/jungle-1807476_640.jpg",
         "https://cdn.pixabay.com/photo/2017/11/12/13/37/forest-2942477_640.jpg"
       ]),
-      //Island
-      //okay
+  //Island
+  //okay
   TourPlaceDetailsModel(
       tourplace: "St Regis Bora",
       rate: 4.8,
@@ -225,7 +224,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2014/09/26/03/55/fountain-461552_640.jpg"
       ]),
 
-      //okay
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Bangkok Island ",
       rate: 4.0,
@@ -240,8 +239,8 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2021/08/02/16/22/beach-6517214_640.jpg",
         "https://cdn.stocksnap.io/img-thumbs/280h/V09V9BB1KQ.jpg"
       ]),
-      //Mountain
-      //okay
+  //Mountain
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Keokradong",
       rate: 4.8,
@@ -299,7 +298,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bd/d1/92/sajek.jpg?w=1000&h=-1&s=1",
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bd/d1/83/sajek.jpg?w=1000&h=-1&s=1"
       ]),
-      //okay
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Sippi Arsuang",
       description:
@@ -315,8 +314,8 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/54/6f/71/sajek.jpg?w=1000&h=-1&s=1"
       ]),
 
-      //Lake
-      //okay
+  //Lake
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Boga Lake",
       rate: 4.8,
@@ -343,7 +342,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/a5/ae/fd/boga-lake.jpg?w=800&h=-1&s=1",
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-s/01/f6/de/ea/bogalake-view.jpg?w=600&h=-1&s=1"
       ]),
-  
+
   TourPlaceDetailsModel(
       tourplace: "Madhabpur ",
       description:
@@ -372,7 +371,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-s/02/ec/ee/95/kaptai-lake.jpg?w=600&h=-1&s=1",
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-s/02/ec/ee/91/kaptai-lake.jpg?w=600&h=-1&s=1"
       ]),
-      //okay
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Jadukata Lake",
       rate: 4.0,
@@ -388,8 +387,8 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://dynamic-media-cdn.tripadvisor.com/media/photo-s/02/78/0c/ff/kaptai-lake-rangamati.jpg?w=600&h=-1&s=1"
       ]),
 
-      //River
-      //okay
+  //River
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Kishoreganj Haor",
       rate: 4.8,
@@ -419,7 +418,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2022/12/16/11/05/tanguar-haor-7659427_1280.jpg",
         "https://as1.ftcdn.net/v2/jpg/03/03/34/12/1000_F_303341223_5Zno68kSQYE2cQdhBN25yC9QWY6Wowwk.jpg"
       ]),
-      //okay
+  //okay
   TourPlaceDetailsModel(
       tourplace: "Padma  ",
       rate: 4.3,
@@ -448,7 +447,7 @@ List<TourPlaceDetailsModel> tourplacedetaillist = [
         "https://cdn.pixabay.com/photo/2018/09/14/10/31/nature-3676693_640.jpg",
         "image.png"
       ]),
- // Okay
+  // Okay
   TourPlaceDetailsModel(
       tourplace: "Sangu River",
       rate: 4.0,
@@ -519,3 +518,4 @@ final messages = [
     "time": "11:20 am",
   },
 ];
+ 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,19 +17,37 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String imageInit = "";
+
+  updatedata() async {
+    var document =
+        await FirebaseFirestore.instance.collection("admin").doc("admin").get();
+    print(nameEC.text = document["name"]);
+    print(prefessionalEC.text = document["profession"]);
+    print(dateofbirthEC.text = document["birth"]);
+    print(descriptionEC.text = document["about"]);
+    print(imageInit = document["image"]);
+  }
+
   ImagePicker picker = ImagePicker();
-  XFile? image;
+  XFile? imageFile;
 
   TextEditingController nameEC = TextEditingController();
   TextEditingController prefessionalEC = TextEditingController();
   TextEditingController dateofbirthEC = TextEditingController();
   TextEditingController descriptionEC = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    updatedata();
+  }
+
   takePhoto(ImageSource source) async {
     final pickIfile = await picker.pickImage(source: source);
-    
+
     setState(() {
-      image = pickIfile;
+      imageFile = pickIfile;
       Navigator.pop(context);
     });
   }
@@ -70,7 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text("Update Profile"),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -79,20 +98,22 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                 child: Stack(
                   children: [
-                    image == null
-                        ? const CircleAvatar(
+                    imageFile == null
+                        ? CircleAvatar(
                             radius: 72,
-                            backgroundImage:
-                                AssetImage("asset/image/ion_earth400.png"))
-                        : CircleAvatar(
+                            backgroundImage: NetworkImage(imageInit))
+                        :
+                        //: Container(),
+                        CircleAvatar(
                             radius: 72,
-                            backgroundImage: FileImage(File(image!.path)),
+                            backgroundImage: FileImage(File(imageFile!.path)),
                           ),
                     Positioned(
                         bottom: 20,
                         right: 20,
                         child: InkWell(
                           onTap: () {
+                            print(image ?? "BAngladesh");
                             showDialog(
                               context: context,
                               builder: (context) => bottomSheet(),
@@ -115,19 +136,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 hintText: 'Name',
                 icon: Icons.person,
                 validatorText: '',
-                labelttext: prefs!.getString('name')!,
+                labelttext: prefs!.getString('name') ?? "",
               ),
               TextFormFieldWidgetWithLable(
                 controller: prefessionalEC,
                 hintText: 'Profession',
                 icon: Icons.person,
                 validatorText: '',
-                labelttext: prefs!.getString('profession')!,
+                labelttext: prefs!.getString('profession') ?? "",
               ),
               TextFormFieldWidgetWithLable(
                 controller: dateofbirthEC,
                 hintText: 'Date of Birth',
-                labelttext: prefs!.getString('birth')!,
+                labelttext: prefs!.getString('birth') ?? "",
                 icon: Icons.person,
                 validatorText: '',
               ),
@@ -137,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 hintText: 'description',
                 icon: Icons.abc,
                 validatorText: '',
-                labelttext: prefs!.getString('about')!,
+                labelttext: prefs!.getString('about') ?? "",
               ),
               const SizedBox(
                 height: 15,
@@ -149,24 +170,32 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundColor: const Color(0xff008FA0),
                         padding: const EdgeInsets.symmetric(vertical: 10)),
                     onPressed: () async {
-                      await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(prefs!.getString('uid')!)
+                      //1. upload image to firestorage
+                      String fileName =
+                          DateTime.now().millisecondsSinceEpoch.toString();
+                      Reference storageRef = FirebaseStorage.instance
+                          .ref()
+                          .child("adminimage")
+                          .child(fileName);
+
+                      // Upload
+                      UploadTask uploadTask =
+                          storageRef.putFile(File(imageFile!.path));
+                      TaskSnapshot taskSnapshot =
+                          await uploadTask.whenComplete(() {});
+                      await taskSnapshot.ref.getDownloadURL().then((value) {
+                        imageInit = value;
+                      });
+                      FirebaseFirestore.instance
+                          .collection("admin")
+                          .doc("admin")
                           .update({
                         "name": nameEC.text.trim(),
                         "about": descriptionEC.text.trim(),
                         "profession": prefessionalEC.text.trim(),
-                        "birth": dateofbirthEC.text.trim()
+                        "birth": dateofbirthEC.text.trim(),
+                        "image": imageInit
                       });
-
-                      await prefs!.setString('name', nameEC.text.trim());
-                      await prefs!
-                          .setString('profession', prefessionalEC.text.trim());
-                      await prefs!
-                          .setString('birth', dateofbirthEC.text.trim());
-                      await prefs!
-                          .setString('about', descriptionEC.text.trim());
-
                       showToast(context: context, text: "Update Profile");
 
                       // ignore: use_build_context_synchronously
@@ -196,9 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
-
-//  
+//
 
 //  Row(
 //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -217,4 +244,3 @@ class _ProfilePageState extends State<ProfilePage> {
 //                   label: const Text("Gallery")),
 //             ],
 //           )
-       

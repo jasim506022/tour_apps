@@ -17,7 +17,6 @@ Color black = const Color.fromRGBO(30, 30, 30, 1);
 XFile? image;
 SharedPreferences? prefs;
 
-
 showToast({required BuildContext context, required String text}) {
   Fluttertoast.showToast(
       msg: text,
@@ -57,5 +56,7 @@ TextStyle tourplacetextSTyle = GoogleFonts.inter(
 TextStyle appbarTextStyle = GoogleFonts.inter(
     fontSize: 16,
     fontStyle: FontStyle.normal,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w800,
     color: black);
+
+    enum DeleteUpdate { delete, update }

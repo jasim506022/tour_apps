@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:tour_apps/const/const.dart';
 
-import '../../admin/widget/tourwidget.dart';
+import '../../admin/widget/singletourwidget.dart';
 import '../../model/placemodel.dart';
 
 class ItemDetailsPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   }
 
   String? image;
-  SampleItem? selectedMenu;
+  
   var selectedItem = '';
 
   @override

@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
 import 'package:tour_apps/admin/adminmainpage.dart';
 import 'package:tour_apps/admin/home/uploadscreen.dart';
+import 'package:tour_apps/admin/services/provider/imageselectprovider.dart';
 import 'package:tour_apps/const/const.dart';
-import '../../model/tripsmodel.dart';
+import '../../model/tourmodel.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
-
-enum DeleteUpdate { delete, update }
 
 class TourDetailsAdmin extends StatefulWidget {
   const TourDetailsAdmin({
@@ -18,7 +18,7 @@ class TourDetailsAdmin extends StatefulWidget {
     required this.model,
   });
 
-  final TripsModels model;
+  final TourModel model;
 
   @override
   State<TourDetailsAdmin> createState() => _TourDetailsAdminState();
@@ -26,18 +26,10 @@ class TourDetailsAdmin extends StatefulWidget {
 
 class _TourDetailsAdminState extends State<TourDetailsAdmin> {
   @override
-  void initState() {
-    image = widget.model.image![0];
-    super.initState();
-  }
-
-  String? image;
-  DeleteUpdate? selectMenu;
-  int selectBdColor = 0;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      const SystemUiOverlayStyle(statusBarColor: Colors.white),
     );
     return Scaffold(
       appBar: AppBar(
@@ -47,65 +39,67 @@ class _TourDetailsAdminState extends State<TourDetailsAdmin> {
         ),
         centerTitle: true,
         actions: [
-          PopupMenuButton(onSelected: (value) {
-            setState(() {
-              selectMenu = value;
-              if (selectMenu == DeleteUpdate.delete) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text("Are you want to Delete!"),
-                      content: const Text(
-                          "Do you want delete this tour Permanently"),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text("Cencel")),
-                        TextButton(
-                            onPressed: () {
-                              FirebaseFirestore.instance
-                                  .collection("trip")
-                                  .doc(widget.model.id)
-                                  .delete();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (c) => AdminMainPage()));
-                            },
-                            child: Text(
-                              "Yes",
-                              style: TextStyle(color: Colors.red),
-                            )),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UploadScreen(
-                        isUPdate: true,
-                        tripsModels: widget.model,
-                      ),
-                    ));
-              }
-            });
-          }, itemBuilder: (BuildContext bc) {
-            return [
-              const PopupMenuItem(
-                value: DeleteUpdate.delete,
-                child: Text("Delete"),
-              ),
-              const PopupMenuItem(
-                value: DeleteUpdate.update,
-                child: Text("Update"),
-              ),
-            ];
-          })
+          Consumer<ImageSelectProvider>(
+            builder: (context, values, child) {
+              return PopupMenuButton(onSelected: (value) {
+                values.setMenu(setMenu: value);
+                if (values.getMenu == DeleteUpdate.delete) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Are you want to Delete!"),
+                        content: const Text(
+                            "Do you want delete this tour Permanently"),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Cencel")),
+                          TextButton(
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection("trip")
+                                    .doc(widget.model.id)
+                                    .delete();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (c) => AdminMainPage()));
+                              },
+                              child: const Text(
+                                "Yes",
+                                style: TextStyle(color: Colors.red),
+                              )),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UploadScreen(
+                          isUPdate: true,
+                          tripsModels: widget.model,
+                        ),
+                      ));
+                }
+              }, itemBuilder: (BuildContext bc) {
+                return [
+                  const PopupMenuItem(
+                    value: DeleteUpdate.delete,
+                    child: Text("Delete"),
+                  ),
+                  const PopupMenuItem(
+                    value: DeleteUpdate.update,
+                    child: Text("Update"),
+                  ),
+                ];
+              });
+            },
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -114,62 +108,69 @@ class _TourDetailsAdminState extends State<TourDetailsAdmin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * .5,
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: FancyShimmerImage(
-                          imageUrl: image!,
-                          height: MediaQuery.of(context).size.height * .5,
-                          boxFit: BoxFit.fill,
-                          width: MediaQuery.of(context).size.width),
-                    ),
-                    Positioned(
-                      left: 10,
-                      right: 10,
-                      bottom: 20,
-                      child: SizedBox(
-                        height: 80,
-                        width: 250,
-                        child: ListView.builder(
-                          itemCount: widget.model.image!.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 15),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    image = widget.model.image![index];
-                                    selectBdColor = index;
-                                  });
-                                },
-                                child: Container(
-                                  height: 35,
-                                  width: 80,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            widget.model.image![index]),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      border: Border.all(
-                                          color: selectBdColor == index
-                                              ? Colors.red
-                                              : Colors.white,
-                                          width: 5)),
-                                ),
-                              ),
-                            );
-                          },
+              Consumer<ImageSelectProvider>(
+                builder: (context, value, child) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * .5,
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: FancyShimmerImage(
+                              imageUrl: widget.model.image![value.selectImage],
+                              height: MediaQuery.of(context).size.height * .5,
+                              boxFit: BoxFit.fill,
+                              width: MediaQuery.of(context).size.width),
                         ),
-                      ),
+                        Positioned(
+                          left: 10,
+                          right: 10,
+                          bottom: 20,
+                          child: SizedBox(
+                            height: 80,
+                            width: 250,
+                            child: ListView.builder(
+                              itemCount: widget.model.image!.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 15),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Provider.of<ImageSelectProvider>(context,
+                                              listen: false)
+                                          .setImage(imageNumber: index);
+                                      Provider.of<ImageSelectProvider>(context,
+                                              listen: false)
+                                          .setColor(colorNumber: index);
+                                    },
+                                    child: Container(
+                                      height: 35,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                widget.model.image![index]),
+                                            fit: BoxFit.fill,
+                                          ),
+                                          border: Border.all(
+                                              color: value.selectColor == index
+                                                  ? Colors.red
+                                                  : Colors.white,
+                                              width: 5)),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
               const SizedBox(
                 height: 10,
