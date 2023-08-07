@@ -5,10 +5,10 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:tour_apps/const/const.dart';
 import 'package:tour_apps/model/tourmodel.dart';
-import '../home/tourdetailsadmin.dart';
+import '../../user/tourpage/tourdetailspage.dart';
 
 class SingleTourWidget extends StatelessWidget {
-  const SingleTourWidget({
+   const SingleTourWidget({
     Key? key,
   }) : super(key: key);
 
@@ -20,7 +20,7 @@ class SingleTourWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TourDetailsAdmin(model: tourmodel),
+              builder: (context) => TourDetails(model: tourmodel),
             ));
       },
       child: Padding(

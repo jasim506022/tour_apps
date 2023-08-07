@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Colors
 Color backgroundColor = const Color.fromRGBO(247, 247, 247, 1);
 Color blueColor = const Color.fromRGBO(0, 143, 160, 1);
-Color unselectedColor = const Color.fromRGBO(99, 99, 99, 1);
+Color unselectedColor = const Color.fromRGBO(30, 30, 30, 1);
 Color iconColor = const Color.fromRGBO(61, 61, 61, 1);
-Color locationTextColor = const Color.fromRGBO(50, 50, 50, 1);
+Color locationTextColor = const Color.fromRGBO(20, 20, 20, 1);
 Color yello = const Color.fromRGBO(255, 210, 51, 1);
 Color white = Colors.white;
 Color black = const Color.fromRGBO(30, 30, 30, 1);
 
-XFile? image;
 SharedPreferences? prefs;
 
 showToast({required BuildContext context, required String text}) {
@@ -59,4 +57,4 @@ TextStyle appbarTextStyle = GoogleFonts.inter(
     fontWeight: FontWeight.w800,
     color: black);
 
-    enum DeleteUpdate { delete, update }
+enum DeleteUpdate { delete, update }

@@ -7,7 +7,7 @@ import 'package:tour_apps/admin/home/uploadscreen.dart';
 import 'package:tour_apps/const/const.dart';
 import 'package:tour_apps/model/tourmodel.dart';
 import '../../model/categoriesmodel.dart';
-import '../services/provider/dropcategoryall.dart';
+import '../../service/provider/admin/dropcategoryall.dart';
 import '../widget/loadingtourwidget.dart';
 import '../widget/singletourwidget.dart';
 

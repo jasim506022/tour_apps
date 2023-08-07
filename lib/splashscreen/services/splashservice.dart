@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../page/auth/loginpage.dart';
-import '../../page/mainpage.dart';
+
+import '../../auth/loginpage.dart';
 import '../../admin/adminmainpage.dart';
+import '../../user/mainpage.dart';
 
 class SplashService {
   void isMainPage(BuildContext context) {
@@ -26,7 +27,7 @@ class SplashService {
           () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const MainPage(),
+                builder: (context) => MainPage(),
               )),
         );
       }

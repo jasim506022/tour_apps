@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tour_apps/admin/services/provider/searchprovider.dart';
 
 import '../../const/const.dart';
 import '../../model/tourmodel.dart';
+import '../../service/provider/admin/searchprovider.dart';
 import '../widget/loadingtourwidget.dart';
 import '../widget/singletourwidget.dart';
 
@@ -21,7 +21,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     searchFN.dispose();
     super.dispose();
   }

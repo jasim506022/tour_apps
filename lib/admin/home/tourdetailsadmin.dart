@@ -6,11 +6,12 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:tour_apps/admin/adminmainpage.dart';
 import 'package:tour_apps/admin/home/uploadscreen.dart';
-import 'package:tour_apps/admin/services/provider/imageselectprovider.dart';
 import 'package:tour_apps/const/const.dart';
 import '../../model/tourmodel.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+
+import '../../service/provider/admin/imageselectprovider.dart';
 
 class TourDetailsAdmin extends StatefulWidget {
   const TourDetailsAdmin({

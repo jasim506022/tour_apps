@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:tour_apps/const/const.dart';
-import 'package:tour_apps/page/chatroom/chatroompage.dart';
-import 'package:tour_apps/page/profile/profileedit.dart';
-import 'package:tour_apps/page/save/savetipspage.dart';
+import 'package:tour_apps/user/chatroom/chatroompage.dart';
+import 'package:tour_apps/user/profile/profilepages.dart';
+import 'package:tour_apps/user/save/savetourpage.dart';
 import 'group/grouptripsadminpage.dart';
 import 'home/homepageadmin.dart';
 
@@ -30,7 +30,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
     const GroupTripsAdminPage(),
     const ChatRoomPage(),
     const SaveTipsPage(),
-    const ProfileEditPage()
+    const ProfilePages()
   ];
 
   @override

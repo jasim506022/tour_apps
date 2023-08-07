@@ -4,9 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:tour_apps/admin/services/provider/uploadsingletourprovider.dart';
 import '../../../model/categoriesmodel.dart';
-import '../../../widget/textfieldwidget copy.dart';
+import '../../service/provider/admin/uploadsingletourprovider.dart';
+import '../../user/widget/textfieldwidget copy.dart';
 import '../../../admin/adminmainpage.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import '../../const/const.dart';
@@ -16,7 +16,7 @@ import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class UploadScreen extends StatefulWidget {
-  UploadScreen({super.key, this.isUPdate, this.tripsModels});
+  UploadScreen({super.key, this.isUPdate = false, this.tripsModels});
 
   bool? isUPdate;
   TourModel? tripsModels;
@@ -113,7 +113,6 @@ class _UploadScreenState extends State<UploadScreen> {
                                   Provider.of<UploadSingleTourProvider>(context,
                                           listen: false)
                                       .setUploading(value: true);
-
                                   FirebaseFirestore.instance
                                       .collection("trip")
                                       .doc(tripsId)
