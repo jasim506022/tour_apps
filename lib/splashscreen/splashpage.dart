@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tour_apps/const/const.dart';
-import 'services/splashservice.dart';
+import '../others/const.dart';
+import '../others/textstyle.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,11 +10,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  SplashService splashService = SplashService();
-
   @override
   void initState() {
-    splashService.isMainPage(context);
+    globalMethod.isMainPage(context);
     super.initState();
   }
 

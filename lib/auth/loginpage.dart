@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:tour_apps/auth/registrationpage.dart';
-import 'package:tour_apps/user/widget/loadingdialogwidget.dart';
-
-import '../../const/const.dart';
-import '../user/widget/textfieldwidget.dart';
+import 'package:tour_apps/widget/loading_dialog_widget.dart';
+import '../others/const.dart';
+import '../service/provider/themeprovider.dart';
+import '../widget/textfieldwidget.dart';
 import '../user/mainpage.dart';
 import 'adminloginpage.dart';
 import 'forgetpasswordpage.dart';
@@ -28,6 +29,16 @@ class _LoginPageState extends State<LoginPage> {
   var key = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      var categoriesprovider =
+          Provider.of<ThemeProvider>(context, listen: false);
+      categoriesprovider.setDarkTheme = false;
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
     emailEC.dispose();
     passwordEC.dispose();
@@ -42,7 +53,8 @@ class _LoginPageState extends State<LoginPage> {
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        return true;
+        SystemNavigator.pop();
+        return false;
       },
       child: GestureDetector(
         onTap: () {
@@ -122,16 +134,16 @@ class _LoginPageState extends State<LoginPage> {
                                     children: [
                                       TextFormFieldWidget(
                                         controller: emailEC,
-                                        hintText: 'Enter Your Email Address',
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         icon: Icons.email,
                                         validatorText: 'Email address Empty',
+                                        hintText: 'Enter Your Email Address',
                                       ),
                                       TextFormFieldWidget(
                                         controller: passwordEC,
-                                        hintText: 'Enter Your Password',
                                         obscureText: true,
+                                        hintText: "Enter Your Password",
                                         icon: Icons.lock,
                                         validatorText: 'Pasword is Empty',
                                       ),
@@ -330,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              AdminLoginPage(),
+                                              const AdminLoginPage(),
                                         ));
                                   },
                                 style: GoogleFonts.inter(

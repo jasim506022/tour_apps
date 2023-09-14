@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tour_apps/admin/adminmainpage.dart';
-import 'package:tour_apps/user/widget/loadingdialogwidget.dart';
-import '../../const/const.dart';
-import '../user/widget/textfieldwidget.dart';
+import 'package:tour_apps/widget/loading_dialog_widget.dart';
+import '../others/const.dart';
+import '../widget/textfieldwidget.dart';
 import 'forgetpasswordpage.dart';
 import 'loginpage.dart';
 
@@ -125,6 +125,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                   child: Column(
                                     children: [
                                       TextFormFieldWidget(
+                                        
                                         controller: emailEC,
                                         hintText: 'Enter Your Email Address',
                                         keyboardType:

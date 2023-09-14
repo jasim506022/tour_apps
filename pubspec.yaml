@@ -52,7 +52,7 @@ dependencies:
   cloud_firestore: ^4.8.0
   firebase_storage: ^11.2.2
   http: ^1.1.0
-  flutter_local_notifications: ^15.1.0+1
+  flutter_local_notifications: ^9.1.4
   firebase_messaging: ^14.6.5
   geolocator: ^9.0.2
   geocoding: ^2.1.0
@@ -63,6 +63,9 @@ dependencies:
   provider: ^6.0.5
   flutter_bkash: ^0.2.0
   webview_flutter_android: ^3.9.2
+  flutter_stripe: ^9.3.0
+  upi_payment_flutter: ^0.0.4
+  flutter_sslcommerz: ^2.2.2-nullsafety.0
 
 
 dev_dependencies:
@@ -91,6 +94,8 @@ flutter:
   assets:
     - asset/image/
     - asset/categories/
+    - asset/onboarding/
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

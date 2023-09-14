@@ -1,17 +1,20 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:provider/provider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:tour_apps/admin/home/searchpage.dart';
-import 'package:tour_apps/user/chatroom/chatroompage.dart';
-import 'package:tour_apps/user/profile/profilepages.dart';
-import 'package:tour_apps/user/save/savetourpage.dart';
-import 'package:tour_apps/user/widget/apis.dart';
+import 'package:tour_apps/service/provider/categoriesprovider.dart';
+import 'package:tour_apps/user/page/save/savetourpage.dart';
+import 'package:tour_apps/user/page/search/searchuserpage.dart';
 
-import '../const/const.dart';
-import 'home/homepage.dart';
+import 'package:tour_apps/service/other/local_service.dart';
+import 'package:tour_apps/service/other/pushnotificationmessage.dart';
+import '../others/textstyle.dart';
+import '../model/categoriesmodel.dart';
+import '../service/database/firebaseservice.dart';
+import 'page/home/homepage.dart';
+import 'page/profile/profilepagesuser.dart';
 
 // ignore: must_be_immutable
 class MainPage extends StatefulWidget {
@@ -23,83 +26,58 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  var _currentIndex = 0;
+  String? tokens;
+
   @override
   void initState() {
-    updatedata();
-    FirebaseMessagingHelper.getFirebaseMessagingToken();
+    LocalServiceNotfication.initializeuser(context);
+    PushNotificationMessage message = PushNotificationMessage();
+    message.requestNotificationPermission();
+    message.initMessageInforUser(context);
+    FirebaseServices.userSharePrefenceDataSet();
+    FirebaseServices.getFcmToken(
+      collection: "users",
+      doc: FirebaseAuth.instance.currentUser!.uid,
+      deviceToken: 'userDiveceToken',
+    );
+
+     Future.delayed(Duration.zero, () {
+      var categoriesprovider =
+          Provider.of<CategoriesProvider>(context, listen: false);
+      categoriesprovider.setCategory(cateory: categories[0].name);
+      categoriesprovider.setIndex(index: 0);
+    });
     super.initState();
   }
 
-  var _currentIndex = 0;
-  updatedata() async {
-    try {
-      var documentSnapshot = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-
-      if (documentSnapshot.exists) {
-       
-        // DateTime birthdayDate = documentSnapshot["birth"].t;
-        // DateTime justDate =
-        //     DateTime(birthdayDate.year, birthdayDate.month, birthdayDate.day);
-        // String birthday = justDate.toString();
-        // print("Bangladesh");
-
-        await prefs!.setString("uid", documentSnapshot["uid"]);
-        await prefs!.setString("username", documentSnapshot["name"]);
-        await prefs!
-            .setString("userprofession", documentSnapshot["profession"]);
-        
-        await prefs!.setString("useremail", documentSnapshot["email"]);
-        await prefs!.setString("userimage", documentSnapshot["image"]);
-        await prefs!.setString("userabout", documentSnapshot["about"]);
-        await prefs!.setString("userphone", documentSnapshot["phone"]);
-        await prefs!.setStringList(
-            "savetour", List.from(documentSnapshot.data()!['savetour']));
-        await prefs!.setStringList("savegrouptour",
-            List.from(documentSnapshot.data()!['savegrouptour']));
-
-          print(prefs!.getStringList("savetour")!);
-
-        await prefs!.setStringList("bookingtour", []);
-
-         print("Bangladesh");
-        print(documentSnapshot["birth"]);
-
-        var firebaseTimestamp = documentSnapshot["birth"];
-
-        DateTime dateTime = firebaseTimestamp.toDate();
-        DateTime justDate =
-            DateTime(dateTime.year, dateTime.month, dateTime.day);
-        String birthday = justDate.toString();
-
-        print("DateTime from Firebase Timestamp: $dateTime");
-        await prefs!.setString("userbirth", birthday);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching document data: $e');
-      }
-    }
-  }
-
-  var list = [
+  var menuList = [
     const HomePage(),
-    const SearchPage(),
-    const ChatRoomPage(),
+    SearchUserPage(),
     const SaveTipsPage(),
-    const ProfilePages(),
+    const ProfilePageUser(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+        statusBarIconBrightness: Theme.of(context).colorScheme.brightness,
+        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor,
+        systemNavigationBarIconBrightness:
+            Theme.of(context).colorScheme.brightness,
+      ),
+    );
     return WillPopScope(
       onWillPop: () async {
-        return true;
+        SystemNavigator.pop();
+        return false;
       },
       child: Scaffold(
-        body: widget.index == null ? list[_currentIndex] : list[widget.index!],
+        body: widget.index == null
+            ? menuList[_currentIndex]
+            : menuList[widget.index!],
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: widget.index == null ? _currentIndex : widget.index!,
           onTap: (i) => setState(() {
@@ -109,29 +87,24 @@ class _MainPageState extends State<MainPage> {
           items: [
             SalomonBottomBarItem(
                 icon: const Icon(Icons.home),
-                title: const Text("Home"),
+                title: Text("Home", style: bottomBarItemTextStyle),
                 selectedColor: Theme.of(context).primaryColor,
-                unselectedColor: unselectedColor),
+                unselectedColor: Theme.of(context).hintColor),
             SalomonBottomBarItem(
                 icon: const Icon(Ionicons.search),
-                title: const Text("Search"),
+                title: Text("Search", style: bottomBarItemTextStyle),
                 selectedColor: Theme.of(context).primaryColor,
-                unselectedColor: unselectedColor),
-            SalomonBottomBarItem(
-                icon: const Icon(Ionicons.chatbox),
-                title: const Text("Chat Room"),
-                selectedColor: Theme.of(context).primaryColor,
-                unselectedColor: unselectedColor),
+                unselectedColor: Theme.of(context).hintColor),
             SalomonBottomBarItem(
                 icon: const Icon(Ionicons.heart),
-                title: const Text("Save"),
+                title: Text("Save", style: bottomBarItemTextStyle),
                 selectedColor: Theme.of(context).primaryColor,
-                unselectedColor: unselectedColor),
+                unselectedColor: Theme.of(context).hintColor),
             SalomonBottomBarItem(
                 icon: const Icon(Ionicons.person),
-                title: const Text("Profile"),
+                title: Text("Profile", style: bottomBarItemTextStyle),
                 selectedColor: Theme.of(context).primaryColor,
-                unselectedColor: unselectedColor),
+                unselectedColor: Theme.of(context).hintColor),
           ],
         ),
       ),

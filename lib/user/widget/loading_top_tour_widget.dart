@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tour_apps/others/utilies.dart';
 
-import '../../const/const.dart';
 
 class LoadingTopTourWidget extends StatelessWidget {
   const LoadingTopTourWidget({
@@ -11,7 +10,11 @@ class LoadingTopTourWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color widgtColors = Colors.grey.shade700;
+    var utils = Utils(context);
+    Color baseShimmerColor = utils.baseShimmerColor;
+    Color highlightShimmerColor = utils.highlightShimmerColor;
+    Color widgetShimmerColor = utils.widgetShimmerColor;
+
     return Padding(
       padding: const EdgeInsets.only(right: 15),
       child: ListView.builder(
@@ -23,18 +26,18 @@ class LoadingTopTourWidget extends StatelessWidget {
             width: 165,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade200,
-              highlightColor: Colors.grey.shade400,
+              baseColor: baseShimmerColor,
+              highlightColor: highlightShimmerColor,
               child: Column(
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                      color: widgtColors,
+                      color: widgetShimmerColor,
                       height: 110,
                       width: double.infinity,
                     ),
@@ -45,7 +48,7 @@ class LoadingTopTourWidget extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        color: widgtColors,
+                        color: widgetShimmerColor,
                         height: 16,
                         width: 120,
                       ),
@@ -53,7 +56,7 @@ class LoadingTopTourWidget extends StatelessWidget {
                         width: 15,
                       ),
                       Container(
-                        color: widgtColors,
+                        color: widgetShimmerColor,
                         height: 16,
                         width: 16,
                       ),
@@ -63,7 +66,7 @@ class LoadingTopTourWidget extends StatelessWidget {
                     height: 10,
                   ),
                   Container(
-                    color: widgtColors,
+                    color: widgetShimmerColor,
                     height: 16,
                     width: 165,
                   ),
@@ -73,7 +76,7 @@ class LoadingTopTourWidget extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        color: widgtColors,
+                        color: widgetShimmerColor,
                         height: 16,
                         width: 120,
                       ),
@@ -81,7 +84,7 @@ class LoadingTopTourWidget extends StatelessWidget {
                         width: 15,
                       ),
                       Container(
-                        color: widgtColors,
+                        color: widgetShimmerColor,
                         height: 16,
                         width: 16,
                       ),

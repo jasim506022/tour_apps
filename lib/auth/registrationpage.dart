@@ -7,13 +7,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:tour_apps/user/widget/loadingdialogwidget.dart';
+import 'package:tour_apps/widget/loading_dialog_widget.dart';
 
-import '../../const/const.dart';
-import '../user/widget/textfieldwidget.dart';
-import '../service/provider/registerprovider.dart';
+import '../others/const.dart';
+import '../service/provider/image_upload_provider.dart';
+import '../widget/textfieldwidget.dart';
 import 'loginpage.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -32,8 +31,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
   var key = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      Provider.of<ImageUploadProvider>(context, listen: false).setImage(null);
+    });
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    // TODO: implement dispose
     emailEC.dispose();
     passwordEC.dispose();
     nameEC.dispose();
@@ -42,39 +48,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   String downloadurl = "";
-
-  bottomSheet(RegisterProvider value) {
-    return AlertDialog(
-      title: const Text(
-        "Choose Profile, Photo",
-        style: TextStyle(fontSize: 20),
-      ),
-      content: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ElevatedButton.icon(
-              onPressed: () {
-                Provider.of<RegisterProvider>(context, listen: false)
-                    .setImage(ImageSource.camera);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.camera),
-              label: const Text("Camera")),
-          const SizedBox(
-            width: 10,
-          ),
-          ElevatedButton.icon(
-              onPressed: () {
-                Provider.of<RegisterProvider>(context, listen: false)
-                    .setImage(ImageSource.gallery);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.image),
-              label: const Text("Gallery")),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +59,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Consumer<RegisterProvider>(
-        builder: (context, value, child) {
+      child: Consumer<ImageUploadProvider>(
+        builder: (context, imageUploadProvider, child) {
           return Scaffold(
             body: Stack(
               children: [
@@ -145,17 +118,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             onTap: () {
                               showDialog(
                                 context: context,
-                                builder: (context) => bottomSheet(value),
+                                builder: (context) =>
+                                    globalMethod.bottomSheet(context),
                               );
                             },
                             child: CircleAvatar(
                               radius: 72,
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black,
-                              backgroundImage: value.image == null
-                                  ? null
-                                  : FileImage(File(value.image!.path)),
-                              child: value.image == null
+                              backgroundImage:
+                                  imageUploadProvider.imageFile == null
+                                      ? null
+                                      : FileImage(File(
+                                          imageUploadProvider.imageFile!.path)),
+                              child: imageUploadProvider.imageFile == null
                                   ? const Icon(
                                       Icons.add_photo_alternate,
                                       color: Colors.grey,
@@ -214,7 +190,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 10)),
                               onPressed: () {
-                                registrationForm(value);
+                                registrationForm(imageUploadProvider);
                               },
                               child: Text(
                                 "Sign Up",
@@ -281,8 +257,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  void registrationForm(RegisterProvider value) async {
-    if (value.image == null) {
+  void registrationForm(ImageUploadProvider value) async {
+    if (value.imageFile == null) {
       //image is not selected
       showToast(context: context, text: 'Please Selected Image');
     } else {
@@ -304,7 +280,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               .child(fileName);
 
           // Upload
-          UploadTask uploadTask = storageRef.putFile(File(value.image!.path));
+          UploadTask uploadTask =
+              storageRef.putFile(File(value.imageFile!.path));
           TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
           await taskSnapshot.ref.getDownloadURL().then((value) {
             downloadurl = value;
@@ -325,10 +302,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
               "password": passwordEC.text.trim(),
               "image": downloadurl,
               "name": nameEC.text.trim(),
-              "profession": "junior developer",
-              "birth": "15/12/1998",
-              "about": "about",
+              "profession": " ",
+              "birth": " ",
+              "phone": " ",
+              "about": " ",
               "status": "approved",
+              "bookinggroup": ["tourapp"],
+              "bookingtour": ["tourapp"],
+              "historygrouptour": ["tourapp"],
+              "savegrouptour": ["tourapp"],
+              "savetour": ["tourapp"],
+              "historytour": ["tourapp"]
             });
           }).catchError((errorMessage) {
             showToast(

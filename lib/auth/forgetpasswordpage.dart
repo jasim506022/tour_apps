@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tour_apps/auth/registrationpage.dart';
 
 
-import '../../const/const.dart';
-import '../user/widget/textfieldwidget.dart';
+import '../others/const.dart';
+import '../widget/textfieldwidget.dart';
 import 'loginpage.dart';
 
 class ForgetPasswwordPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _ForgetPasswwordPageState extends State<ForgetPasswwordPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+
     emailEC.dispose();
 
     super.dispose();
