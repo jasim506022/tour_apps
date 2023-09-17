@@ -17,7 +17,7 @@ List<CategoryModel> categories = [
   CategoryModel(name: "River", imagename: "asset/categories/river.png"),
 ];
 
-List<String> categoryString = [
+List<String> updatecategoryString = [
   "Sea",
   "Forest",
   "Island",
